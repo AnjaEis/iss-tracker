@@ -1,0 +1,80 @@
+# PRD: ISS-Live-Tracker
+
+## 1. Überblick
+
+**Ziel:** Eine reine Frontend-Web-App, die die aktuelle Position der Internationalen Raumstation (ISS) live auf einer Karte zeigt und unter einer öffentlichen HTTPS-URL erreichbar ist.
+
+**Kontext:** Übung (Einzelarbeit, Richtwert 45 Minuten). Die App wird mit Claude Code gebaut, lokal getestet und deployt.
+
+**Ergebnis:** Eine öffentliche Web-Adresse, unter der die ISS live auf einer Karte zu sehen ist.
+
+## 2. Zielgruppe
+
+Lernende der Übung, die den Ablauf Planen → Bauen → Testen → Deployen einmal vollständig durchlaufen. Endnutzer der App sind alle, die die Live-URL öffnen.
+
+## 3. Datenquelle
+
+| API | Protokoll | Verwendung |
+|---|---|---|
+| `https://api.wheretheiss.at/v1/satellites/25544` | HTTPS | **Verwendet.** Liefert Position, Höhe, Geschwindigkeit (und `visibility`). |
+| Open Notify (`/iss-now.json`, `/astros.json`) | nur HTTP | **Nicht verwenden** (siehe unten). |
+
+- Beide APIs sind kostenlos und benötigen keinen API-Key.
+- Der Browser blockiert HTTP-Anfragen von HTTPS-Seiten ("Mixed Content"). Open Notify würde nach dem Deploy daher eine leere Karte liefern.
+
+## 4. Funktionale Anforderungen
+
+| ID | Anforderung | Priorität |
+|---|---|---|
+| F1 | Karte mit Leaflet, auf der ein ISS-Marker die aktuelle Position zeigt. | Muss |
+| F2 | Anzeige von Breite, Länge, Höhe und Geschwindigkeit. | Muss |
+| F3 | Position wird automatisch alle ca. 5 Sekunden aktualisiert; der Marker bewegt sich entsprechend. | Muss |
+| F4 | Ist die API nicht erreichbar, erscheint ein verständlicher Hinweis statt einer leeren Seite. | Muss |
+
+### Bonus (optional, falls früher fertig)
+
+| ID | Anforderung | Hinweis |
+|---|---|---|
+| B1 | Spur der letzten Positionen als Linie. | |
+| B2 | Karte folgt der ISS, per Ein/Aus-Schalter. | |
+| B3 | Tag/Nacht-Anzeige über das Feld `visibility`. | |
+| B4 | Astronauten-Liste aus `astros.json`. | Schwerste Aufgabe: Die Quelle ist HTTP, daher wird ein Proxy benötigt (Tipp: Vercel Function). Das widerspricht dem Muss-Scope "kein Backend" nur für diese Bonus-Aufgabe. |
+
+## 5. Nicht-funktionale Anforderungen und Einschränkungen
+
+- **Technologie:** HTML, CSS, JavaScript. Kartenbibliothek: Leaflet.
+- **Kein eigenes Backend** (Ausnahme: Proxy für Bonus B4).
+- **HTTPS:** Alle Requests der App müssen über HTTPS laufen. In der Browser-Konsole darf kein Mixed-Content-Fehler auftauchen.
+- **Keine API-Keys** oder Secrets im Code.
+- **Robustheit:** Fehler beim Abruf führen nicht zum Absturz oder zu einer leeren Seite. Nach einem Fehler läuft das Polling weiter und die Anzeige erholt sich, sobald die API wieder antwortet.
+
+## 6. Deployment
+
+- **Empfohlen: Vercel** mit `npx vercel --prod` (einmaliger Login, kostenloser Account, URL sofort verfügbar).
+- **Alternative: GitHub Pages.** Repository anlegen, pushen, unter Settings → Pages aktivieren. Die URL steht nach ca. 1 Minute bereit.
+- Beide Varianten liefern HTTPS automatisch.
+
+## 7. Vorgehen
+
+Nach jedem Schritt wird das Ergebnis geprüft, bevor der nächste beginnt.
+
+1. **Planen:** Anforderungen als Prompt formulieren (dieses PRD).
+2. **Bauen:** Claude Code erzeugt die App.
+3. **Testen:** Lokal im Browser prüfen.
+4. **Deployen:** Öffentliche URL erzeugen.
+
+## 8. Akzeptanzkriterien ("Fertig, wenn ...")
+
+- [ ] Die Live-URL öffnet sich im Inkognito-Fenster.
+- [ ] Der Marker bewegt sich innerhalb von 10 Sekunden sichtbar.
+- [ ] Die Browser-Konsole zeigt keinen Mixed-Content-Fehler.
+- [ ] Die Live-URL wurde im Chat geteilt.
+
+## 9. Offene Punkte
+
+Das Quelldokument legt diese Punkte nicht fest. Sie sind bei der Umsetzung zu entscheiden:
+
+- Genaue Einheiten und Rundung der Anzeigewerte (die API liefert z. B. km und km/h). - km/h und km
+- Gestaltung und Layout der Oberfläche. - Die Oberfläche soll einfach und übersichtlich sein.
+- Konkreter Hinweistext und Darstellung bei API-Ausfall. - Wenn die API nicht erreichbar ist, erscheint ein verständlicher Hinweis statt einer leeren Seite.
+- Wahl der Kartenkacheln (z. B. OpenStreetMap) samt Attribution. - OpenStreetMap
