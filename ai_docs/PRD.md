@@ -43,13 +43,16 @@ Lernende der Übung, die den Ablauf Planen → Bauen → Testen → Deployen ein
 ## 5. Nicht-funktionale Anforderungen und Einschränkungen
 
 - **Technologie:** HTML, CSS, JavaScript. Kartenbibliothek: Leaflet.
-- **Kein eigenes Backend** (Ausnahme: Proxy für Bonus B4).
+- **Architektur:** Wir verwenden den **Next.js App Router** (Verzeichnis `app/`). Die Seiten sind Client-Komponenten, die die API direkt im Browser abfragen. Leaflet darf nur clientseitig geladen werden (kein Server-Side-Rendering der Karte).
+- **Quellcode-Ablage:** Alle Quelldaten (Quellcode der App) liegen im Ordner `app/` im Projektstamm.
+- **Kein eigenes Backend** (Ausnahme: Proxy für Bonus B4, z. B. als Route Handler im App Router unter `app/api/`). Next.js wird nur als Frontend-Framework genutzt.
 - **HTTPS:** Alle Requests der App müssen über HTTPS laufen. In der Browser-Konsole darf kein Mixed-Content-Fehler auftauchen.
 - **Keine API-Keys** oder Secrets im Code.
 - **Robustheit:** Fehler beim Abruf führen nicht zum Absturz oder zu einer leeren Seite. Nach einem Fehler läuft das Polling weiter und die Anzeige erholt sich, sobald die API wieder antwortet.
 
 ## 6. Deployment
 
+- Hinweis: Mit dem App Router ist Vercel die natürliche Wahl. GitHub Pages geht nur mit statischem Export (`output: 'export'`).
 - **Empfohlen: Vercel** mit `npx vercel --prod` (einmaliger Login, kostenloser Account, URL sofort verfügbar).
 - **Alternative: GitHub Pages.** Repository anlegen, pushen, unter Settings → Pages aktivieren. Die URL steht nach ca. 1 Minute bereit.
 - Beide Varianten liefern HTTPS automatisch.
